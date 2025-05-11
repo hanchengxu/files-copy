@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>文件批量复制器</title>
+  </head>
+  <body>
+    <h1>文件批量复制</h1>
+    <label for="copyCount">每个文件复制数量：</label>
+    <input type="number" id="copyCount" value="1" min="1" />
+    <br><br>
+    <button id="choose-files">选择文件</button>
+    <button id="choose-dest">选择目标目录</button>
+    <button id="copy">开始复制</button>
+    <pre id="log"></pre>
+
+    <script>
+      let selectedFiles = [];
+      let destination = '';
+
+      const log = (msg) => {
+        document.getElementById('log').textContent += `\n${msg}`;
+      };
+
+      document.getElementById('choose-files').onclick = async () => {
+        selectedFiles = await window.api.selectFiles();
+        log('选中文件: ' + selectedFiles.join(', '));
+      };
+
+      document.getElementById('choose-dest').onclick = async () => {
+        destination = await window.api.selectDestination();
+        log('目标目录: ' + destination);
+      };
+
+      document.getElementById('copy').onclick = async () => {
+        if (!selectedFiles.length || !destination) {
+          log('请先选择文件和目标目录');
+          return;
+        }
+        const countInput = document.getElementById('copyCount');
+        const copyCount = parseInt(countInput.value, 10);
+        const result = await window.api.copyFiles(selectedFiles, destination, copyCount);
+        if (result.success) {
+          log('复制成功');
+        } else {
+          log('复制失败: ' + result.message);
+        }
+      };
+    </script>
+  </body>
+</html>
