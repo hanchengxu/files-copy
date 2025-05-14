@@ -4,18 +4,23 @@
   "description": "copy files",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "electron-builder"
+    "start": "concurrently \"npm:dev\" \"npm:electron\"",
+    "dev": "cd renderer && vite --host --port 5173",
+    "electron": "cross-env NODE_ENV=development electron .",
+    "build": "cd renderer && vite build",
+    "preview": "cd renderer && vite preview --port 5173",
+    "dist": "npm run build && electron-builder"
   },
-  "author": "",
+  "author": "chengxu.han",
   "license": "ISC",
   "devDependencies": {
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
     "electron": "^36.2.0",
     "electron-builder": "^26.0.12"
   },
   "build": {
-    "appId": "filesCopy",
+    "appId": "files-copy",
     "win": {
       "target": [
         "portable"
